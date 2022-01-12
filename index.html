@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>EVALUACIÓN 3</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js">
+
+	</script>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<title>Ingreso de Productos</title>
+	</script>
+</head>
+
+<body>
+	<nav id="menu">
+		<button class="btn btn-dark" onclick="ingreso();">Ingreso de Productos</button>
+  <button class="btn btn-dark" onclick="mostrarLista();">Mostrar  Lista</button>
+  <button class="btn btn-dark" onclick="compra();">Generar Compra</button>
+</nav>
+  <br>
+  <br>
+<!-- Tab panes -->
+<div class="tab-content">
+  <div class="tab-pane container active" id="mostrar"></div>
+</div>
+
+	<script>
+      async function ingreso(){
+         let promesa=new Promise(function(resolve){
+            let req=new XMLHttpRequest();
+            req.open('GET','ingresoproductos.html');
+            req.onload=function(){
+               if(req.status==200){
+                  resolve(req.response);
+               }else{
+                  resolve("ups!!! página no encontrada");
+               }
+            };
+            req.send();
+         });
+         document.getElementById('mostrar').innerHTML=await promesa;
+      };
+      async function mostrarLista(){
+         let promesa=new Promise(function(resolve){
+            let req=new XMLHttpRequest();
+            req.open('GET','mostrar.html');
+            req.onload=function(){
+               if(req.status==200){
+                  resolve(req.response);
+               }else{
+                  resolve("ups!!! pagina no encontrada");
+               }
+            };
+            req.send();
+         });
+         document.getElementById('mostrar').innerHTML=await promesa;
+      };
+
+      async function compra(){
+         let promesa=new Promise(function(resolve){
+            let req=new XMLHttpRequest();
+            req.open('GET','compra.html');
+            req.onload=function(){
+               if(req.status==200){
+                  resolve(req.response);
+               }else{
+                  resolve("ups!!! pagina no encontrada");
+               }
+            };
+            req.send();
+         });
+         document.getElementById('mostrar').innerHTML=await promesa;
+      };
+       
+       let lista=[];
+      
+      function ingresar(){
+         let no=document.getElementById('nom').value;
+         let va=parseInt(document.getElementById('val').value);
+         let ca=parseInt(document.getElementById('can').value);
+         let total=va*ca;
+         let lis=new obj(no,va,ca,total);
+         lista.push(lis);
+         document.getElementById('nom').value="";
+         document.getElementById('val').value="";
+         document.getElementById('can').value="";  
+      }
+      function obj(nombre,valor,cantidad){
+         this.nombre=nombre;
+         this.valor=valor;
+         this.cantidad=cantidad;
+         this.total=valor*cantidad;
+      }
+      function mostrar(){
+         let ver="";
+         for(var i = 0; i <lista.length; i++){
+            ver+="<tr><td>"+lista[i].nombre+
+                  "</td><td>"+"$"+lista[i].valor+
+                  "</td><td>"+lista[i].cantidad+
+                  "</td></tr>"
+         }
+         document.getElementById('contTabla').innerHTML=ver;
+      }
+
+      function totalitem(){
+         let total=0;
+         let iva=0;
+         let tpagar=0;
+         let ver="";
+         for(var i = 0; i <lista.length; i++){
+            ver+="<tr><td>"+lista[i].nombre+
+                  "</td><td>"+"$"+lista[i].valor+
+                  "</td><td>"+lista[i].cantidad+
+                  "</td><td>"+"$"+lista[i].total+
+                  "</td></tr>"
+               total+=lista[i].total;
+               iva=total*0.19;
+               tpagar=total+iva;   
+        }
+        document.getElementById('gencompra').innerHTML=ver;
+        document.getElementById('totpedido').innerHTML="Total Neto: $"+total+"<br>Total Iva: $"+iva.toFixed(0)+"<br>Total Con Iva: $"+tpagar.toFixed(0);     
+      }
+      
+      function descuento(){
+        let descuento=parseInt(document.getElementById("dcto").value);
+        let totalPagar=0;
+        let total=0;
+        let iva=0;
+        let tpagar=0;
+        let descto=0;
+        for(var i = 0; i <lista.length; i++){
+               total+=lista[i].total;
+               iva=total*0.19;
+               tpagar=total+iva;
+               if(descuento>0){
+                 descto=(tpagar*descuento)/100;
+                 totalpagar=tpagar-descto;
+               }
+            document.getElementById('descuentoTotal').innerHTML="Descuento: $"+descto.toFixed(0)+"<br>Valor Final a Pagar: $"+totalpagar.toFixed(0);
+            document.getElementById('dcto').value="";
+        }
+      }   
+      function eliminar(){
+         let total=0;
+         let remover=[];
+         let nombre=document.getElementById('npe').value;
+          for (i=0; i<lista.length; i++){
+            if (nombre==lista[i].nombre){
+            remover=lista.splice([i],1);
+            }        
+          };
+          mostrar(); 
+        document.getElementById('npe').value="";
+      }
+      
+function modificar(){
+        let elimProd=document.getElementById("prodElim").value;
+        let desCan=document.getElementById("canDes").value;
+        let aux=0;
+            for (i=0; i<lista.length; i++){
+            if (elimProd==lista[i].nombre && desCan<=lista[i].cantidad){
+            aux=lista[i].cantidad-desCan
+            lista[i].cantidad=aux
+            }else{
+              alert("cantidad mayor a la del productos")
+            }        
+          };
+          mostrar(); 
+        document.getElementById("prodElim").value="";
+        document.getElementById("canDes").value="";
+      }
+ 
+             
+	</script>
+	</body>
+
+</html>      
